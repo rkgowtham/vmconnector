@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:vm="http://www.mulesoft.org/schema/mule/vm" xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/vm http://www.mulesoft.org/schema/mule/vm/current/mule-vm.xsd">
+	<http:listener-config name="HTTP_Listener_config" doc:name="HTTP Listener config" doc:id="ef278f72-9fe4-4c3f-97a7-62cf474057d5" >
+		<http:listener-connection host="0.0.0.0" port="8081" />
+	</http:listener-config>
+	<vm:config name="VM_Config" doc:name="VM Config" doc:id="2f1b3021-b486-4d68-b941-1bbd6eaf766f" >
+		<vm:queues >
+			<vm:queue queueName="VM1" />
+			<vm:queue queueName="VM2" />
+		</vm:queues>
+	</vm:config>
+	<flow name="vmconnectorFlow" doc:id="cdfc8140-ac5f-4d67-b0f3-d49655a9ea97" >
+		<http:listener doc:name="Listener" doc:id="bba2134c-4f27-444e-bc9d-d972ccaf26c9" config-ref="HTTP_Listener_config" path="vmconnector">
+			<http:response >
+				<http:body ><![CDATA[#[output application/json --- payload]]]></http:body>
+			</http:response>
+		</http:listener>
+		<logger level="INFO" doc:name="Logger" doc:id="7fe2ecf8-ee91-4538-9fbf-4febd5348429" message="Befofe send to VM connector...... #[payload]"/>
+		<vm:publish doc:name="Publish" doc:id="3c06c997-3e28-4e24-b737-cf09e94cdbea" config-ref="VM_Config" correlationId="#[correlationId]" queueName="VM1" timeout="50"/>
+		<logger level="INFO" doc:name="Logger" doc:id="1dcc901b-9d66-48b0-b6dd-bc102d76f7d0" message="After send to VM connector...... #[payload]"/>
+	</flow>
+	<flow name="vmconnectorFlow2" doc:id="b7a38f8b-acb5-40bb-a25f-b3cc1f0cce8e" >
+		<http:listener doc:name="Listener" doc:id="04c11bbc-1ad8-438a-93c1-743d80a97833" config-ref="HTTP_Listener_config" path="vmconnector1">
+		</http:listener>
+		<logger level="INFO" doc:name="Logger" doc:id="6b13ebc2-743f-4134-9735-51f1319b962a" message="Before consume the data.....#[payload]"/>
+		<vm:consume doc:name="Consume" doc:id="8d4b64f8-f8aa-4264-a351-94cdff81c856" config-ref="VM_Config" queueName="VM1"/>
+		<logger level="INFO" doc:name="Logger" doc:id="c240079a-06f7-400d-b767-8faded8682e0" message="After consume the data.....#[payload]"/>
+	</flow> 
+</mule>
