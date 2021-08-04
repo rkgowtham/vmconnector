@@ -20,15 +20,19 @@ http://www.mulesoft.org/schema/mule/vm http://www.mulesoft.org/schema/mule/vm/cu
 				<http:body ><![CDATA[#[output application/json --- payload]]]></http:body>
 			</http:response>
 		</http:listener>
+		<logger level="INFO" doc:name="Logger" doc:id="d8c7da1f-87de-483d-bd4d-a755b25891d3" message="Start Logger"/>
 		<logger level="INFO" doc:name="Logger" doc:id="7fe2ecf8-ee91-4538-9fbf-4febd5348429" message="Befofe send to VM connector...... #[payload]"/>
 		<vm:publish doc:name="Publish" doc:id="3c06c997-3e28-4e24-b737-cf09e94cdbea" config-ref="VM_Config" correlationId="#[correlationId]" queueName="VM1" timeout="50"/>
 		<logger level="INFO" doc:name="Logger" doc:id="1dcc901b-9d66-48b0-b6dd-bc102d76f7d0" message="After send to VM connector...... #[payload]"/>
+		<logger level="INFO" doc:name="Logger" doc:id="45a38f9f-4134-45cc-a962-7d76529faebb" message="End Logger"/>
 	</flow>
 	<flow name="vmconnectorFlow2" doc:id="b7a38f8b-acb5-40bb-a25f-b3cc1f0cce8e" >
 		<http:listener doc:name="Listener" doc:id="04c11bbc-1ad8-438a-93c1-743d80a97833" config-ref="HTTP_Listener_config" path="vmconnector1">
 		</http:listener>
+		<logger level="INFO" doc:name="Logger" doc:id="9579012e-5053-46b7-85f5-1594ae0768d8" message="Start Logger"/>
 		<logger level="INFO" doc:name="Logger" doc:id="6b13ebc2-743f-4134-9735-51f1319b962a" message="Before consume the data.....#[payload]"/>
 		<vm:consume doc:name="Consume" doc:id="8d4b64f8-f8aa-4264-a351-94cdff81c856" config-ref="VM_Config" queueName="VM1"/>
 		<logger level="INFO" doc:name="Logger" doc:id="c240079a-06f7-400d-b767-8faded8682e0" message="After consume the data.....#[payload]"/>
+		<logger level="INFO" doc:name="Logger" doc:id="680761d7-d387-48d3-9f9b-1b9b5efe4dce" message="End Logger"/>
 	</flow> 
 </mule>
